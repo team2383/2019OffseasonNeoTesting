@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
@@ -48,12 +49,16 @@ public class OI {
   /////////////////////
 
   public static Gamepad driver = new Gamepad(0);
+  //public static Joystick clockJS = new Joystick(1);
   
   // DRIVE
-  public static DoubleSupplier turn = () -> (driver.getRightX());
+  public static DoubleSupplier turn = () -> -(driver.getRightX());
   public static DoubleSupplier throttle = () -> (driver.getLeftY()); 
+  public static DoubleSupplier clockManual = () -> (driver.getLeftTrigger());
+  //public static DoubleSupplier clockManualBack = () -> (driver.getRightTrigger());
 
   // CLOCK CONTROLS
+  //public static DoubleSupplier clock = () -> clockJS.getY(); 
   public static Button twelve = new JoystickButton(driver, Gamepad.BUTTON_Y);
   public static Button three = new JoystickButton(driver, Gamepad.BUTTON_B);
   public static Button six = new JoystickButton(driver, Gamepad.BUTTON_A);
@@ -63,5 +68,8 @@ public class OI {
   // Below is where you will tell that button what to do.
   public OI(){
   twelve.whenPressed(new SetClock(Clock.ClockPreset.TWELVE));
+  three.whenPressed(new SetClock(Clock.ClockPreset.THREE));
+  six.whenPressed(new SetClock(Clock.ClockPreset.SIX));
+  nine.whenPressed(new SetClock(Clock.ClockPreset.NINE));
   }
 }

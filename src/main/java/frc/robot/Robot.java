@@ -1,11 +1,23 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 import frc.robot.commands.DriveCommand;
+import frc.robot.HAL;
+import frc.robot.OI;
+import frc.robot.auto.BaselineAuto;
+
+import java.lang.reflect.Field;
 
 
 /**
@@ -18,10 +30,10 @@ import frc.robot.commands.DriveCommand;
 
 public class Robot extends TimedRobot {
 
-  public static OI m_oi;
+  //public static OI m_oi;
 
   Command autoCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,15 +42,23 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     
-    m_oi = new OI();
-    m_chooser = new SendableChooser<Command>();
+    @SuppressWarnings("unused")
+		HAL hal = new HAL();
+		@SuppressWarnings("unused")
+    OI oi = new OI();
+    
+    //m_oi = new OI();
     //m_chooser.addObject("Test", new TestSandstormExample(false));
     // m_chooser.addObject("Left Side Rocket Hatch", new LeftSideRocketHatch(false));
     // m_chooser.addObject("Right Side Rocket Hatch", new RightSideRocketHatch(false));
     // m_chooser.addObject("Front Cargo Hatch", new FrontCargoHatch(false));
     //m_chooser.addObject("TestSandstormExample", new TestSandstormExample(false));
-    m_chooser.setDefaultOption("Default Auto", new DriveCommand(OI.throttle, OI.turn));
-    SmartDashboard.putData("Auto mode", m_chooser);
+    autoChooser.setDefaultOption("Default Auto", new DriveCommand(OI.throttle, OI.turn));
+    autoChooser = new SendableChooser<Command>();
+		autoChooser.addDefault("Nothing", new InstantCommand("Nothing"));
+    autoChooser.addObject("Baseline Auto forwards", new BaselineAuto(false));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+		
   }
 
   /**
@@ -94,8 +114,8 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     
-    autoCommand = m_chooser.getSelected();
-		autoCommand = (Command) m_chooser.getSelected();
+    autoCommand = autoChooser.getSelected();
+		autoCommand = (Command) autoChooser.getSelected();
 		
 		if (autoCommand != null) {
 			autoCommand.start();
