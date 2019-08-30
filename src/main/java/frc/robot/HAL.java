@@ -9,5 +9,6 @@ public class HAL {
     public static Drivetrain drive = new Drivetrain();
     public static Clock clock = new Clock();
     public static AHRS navX = new AHRS(SPI.Port.kMXP);
+    public static Neo neo = new Neo();
     
 }

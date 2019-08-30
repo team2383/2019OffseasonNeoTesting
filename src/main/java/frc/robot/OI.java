@@ -59,17 +59,19 @@ public class OI {
 
   // CLOCK CONTROLS
   //public static DoubleSupplier clock = () -> clockJS.getY(); 
-  public static Button twelve = new JoystickButton(driver, Gamepad.BUTTON_Y);
-  public static Button three = new JoystickButton(driver, Gamepad.BUTTON_B);
-  public static Button six = new JoystickButton(driver, Gamepad.BUTTON_A);
-  public static Button nine = new JoystickButton(driver, Gamepad.BUTTON_X);
+  // public static Button twelve = new JoystickButton(driver, Gamepad.BUTTON_Y);
+  // public static Button three = new JoystickButton(driver, Gamepad.BUTTON_B);
+  // public static Button six = new JoystickButton(driver, Gamepad.BUTTON_A);
+  // public static Button nine = new JoystickButton(driver, Gamepad.BUTTON_X);
+  public static Button fuckass = new JoystickButton(driver, Gamepad.BUTTON_X);
 
   // Above all you've done is given a name to the button.
   // Below is where you will tell that button what to do.
   public OI(){
-  twelve.whenPressed(new SetClock(Clock.ClockPreset.TWELVE));
-  three.whenPressed(new SetClock(Clock.ClockPreset.THREE));
-  six.whenPressed(new SetClock(Clock.ClockPreset.SIX));
-  nine.whenPressed(new SetClock(Clock.ClockPreset.NINE));
+  // twelve.whenPressed(new SetClock(Clock.ClockPreset.TWELVE));
+  // three.whenPressed(new SetClock(Clock.ClockPreset.THREE));
+  // six.whenPressed(new SetClock(Clock.ClockPreset.SIX));
+  // nine.whenPressed(new SetClock(Clock.ClockPreset.NINE));
+  fuckass.whenPressed(new SetNeo(Neo.NeoPreset.MOVEIT));
   }
 }

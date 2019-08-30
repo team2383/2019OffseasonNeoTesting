@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     Scheduler.getInstance().removeAll();
+    HAL.neo.neoEncoder.setPosition(0);
   }
 
   @Override

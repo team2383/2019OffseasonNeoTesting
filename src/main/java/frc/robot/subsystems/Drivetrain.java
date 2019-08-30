@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -31,7 +35,9 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Notifier;
 
 import frc.robot.OI;
 import frc.robot.RobotMap;
@@ -39,15 +45,19 @@ import frc.robot.commands.DriveCommand;
 
 public class Drivetrain extends Subsystem {
 
-  public final WPI_TalonSRX leftMaster;
+  	public final WPI_TalonSRX leftMaster;
 	public final BaseMotorController leftFollowerA;
 	public final BaseMotorController leftFollowerB;
 	public final BaseMotorController leftFollowerC;
+	public final CANSparkMax leftSparkFollower;
 
 	public final WPI_TalonSRX rightMaster;
 	public final BaseMotorController rightFollowerA;
 	public final BaseMotorController rightFollowerB;
-  public final BaseMotorController rightFollowerC;
+	public final BaseMotorController rightFollowerC;
+	//public final Spark RightSparkFollower;
+
+	// public 
   
   public final DifferentialDrive drive;
 
@@ -58,11 +68,12 @@ public class Drivetrain extends Subsystem {
     // LEFT DRIVE //
     ////////////////
     
-    leftMaster = new WPI_TalonSRX(47);
+    leftMaster = new WPI_TalonSRX(1);
     // ALPHA BOT
-    leftFollowerA = new TalonSRX(80);
-	leftFollowerB = new TalonSRX(69);
-    leftFollowerC = new TalonSRX(42);
+    leftFollowerA = new TalonSRX(2);
+	leftFollowerB = new TalonSRX(3);
+	leftFollowerC = new TalonSRX(4);
+	leftSparkFollower = new CANSparkMax(20, MotorType.kBrushless);
 
     // OMEGA BOT
     // leftFollowerA = new VictorSPX(2);
@@ -70,22 +81,23 @@ public class Drivetrain extends Subsystem {
     // leftFollowerC = new VictorSPX(4);
 
     leftFollowerA.follow(leftMaster);
-		leftFollowerB.follow(leftMaster);
-		leftFollowerC.follow(leftMaster);
+	leftFollowerB.follow(leftMaster);
+	leftFollowerC.follow(leftMaster);
+	//leftSparkFollower.set(leftMaster.getMotorOutputPercent());
     
     leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		leftMaster.setNeutralMode(NeutralMode.Brake);
-		leftMaster.enableVoltageCompensation(true);
-		leftMaster.configVoltageCompSaturation(12, 10);
+	leftMaster.setNeutralMode(NeutralMode.Brake);
+	leftMaster.enableVoltageCompensation(true);
+	leftMaster.configVoltageCompSaturation(12, 10);
 
-		//clear options
-		leftMaster.configForwardSoftLimitEnable(false, 10);
-		leftMaster.configReverseSoftLimitEnable(false, 10);
-		
-		leftMaster.setControlFramePeriod(ControlFrame.Control_3_General, 5);
-		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 10);
+	//clear options
+	leftMaster.configForwardSoftLimitEnable(false, 10);
+	leftMaster.configReverseSoftLimitEnable(false, 10);
+	
+	leftMaster.setControlFramePeriod(ControlFrame.Control_3_General, 5);
+	leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 10);
 
-		leftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 10);
+	leftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 10);
 
     /////////////////
     // RIGHT DRIVE //
@@ -94,7 +106,8 @@ public class Drivetrain extends Subsystem {
     // ALPHA BOT
     rightFollowerA = new TalonSRX(6);
 	rightFollowerB = new TalonSRX(7);
-    rightFollowerC = new TalonSRX(8);
+	rightFollowerC = new TalonSRX(8);
+	//RightSparkFollower = new Spark(3);
     
     // OMEGA BOT
     // rightFollowerA = new VictorSPX(6);
@@ -110,7 +123,7 @@ public class Drivetrain extends Subsystem {
 	rightMaster.enableVoltageCompensation(true);
 	rightMaster.configVoltageCompSaturation(12, 10);
 		
-		//clear options
+	//clear options
 	rightMaster.configForwardSoftLimitEnable(false, 10);
 	rightMaster.configReverseSoftLimitEnable(false, 10);
 		
@@ -133,8 +146,8 @@ public class Drivetrain extends Subsystem {
 
 		// ALPHA BOT
 		leftMaster.setSensorPhase(false);
-		leftMaster.setInverted(true); // change here
-		leftFollowerA.setInverted(false);
+		leftMaster.setInverted(false); // change here
+		leftFollowerA.setInverted(true);
 		leftFollowerB.setInverted(false);
 		leftFollowerC.setInverted(false);
 
@@ -157,10 +170,10 @@ public class Drivetrain extends Subsystem {
 		
 		// ALPHA BOT
 		rightMaster.setSensorPhase(false);
-		rightMaster.setInverted(false);
+		rightMaster.setInverted(true);
 		rightFollowerA.setInverted(false);
 		rightFollowerB.setInverted(true);
-		rightFollowerC.setInverted(true);
+		rightFollowerC.setInverted(false);
 
 		// OMEGA BOT
 		// rightMaster.setSensorPhase(false);
@@ -265,13 +278,27 @@ public class Drivetrain extends Subsystem {
   }
 
   public double getLeftPosition() {
-		return MotionUtils.rotationsToDistance(MotionUtils.ticksToRotations(leftMaster.getSelectedSensorPosition(0), 4096, 1), RobotMap.getWheelCircumference());
+	  	return leftMaster.getSelectedSensorPosition();
+		//return MotionUtils.rotationsToDistance(MotionUtils.ticksToRotations(leftMaster.getSelectedSensorPosition(0), 4096, 1), RobotMap.getWheelCircumference());
 	}
 	
 	public double getRightPosition() {
-		return MotionUtils.rotationsToDistance(MotionUtils.ticksToRotations(rightMaster.getSelectedSensorPosition(0), 4096, 1), RobotMap.getWheelCircumference());
+		return rightMaster.getSelectedSensorPosition();
+		//return MotionUtils.rotationsToDistance(MotionUtils.ticksToRotations(rightMaster.getSelectedSensorPosition(0), 4096, 1), RobotMap.getWheelCircumference());
+  }
+
+  public double getLeftOutputPercentage(){
+	  return leftMaster.getMotorOutputPercent();
   }
   
+  public void periodic(){
+	SmartDashboard.putNumber("Left Drive", getLeftPosition());
+	SmartDashboard.putNumber("Right Drive", getRightPosition());
+	SmartDashboard.putNumber("Left Master Output Percentage", getLeftOutputPercentage());
+	leftSparkFollower.set(leftMaster.getMotorOutputPercent());
+  }
+
+
   public void setBrake(boolean brake) {
 		NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
 		leftMaster.setNeutralMode(mode);
@@ -283,5 +310,12 @@ public class Drivetrain extends Subsystem {
 		rightFollowerB.setNeutralMode(mode);
 		rightFollowerC.setNeutralMode(mode);
 	}
+
+	// Notifier followerThread = new Notifier(()->
+	// {
+	// 	leftSparkFollower.set(leftMaster.getMotorOutputVoltage());
+	// });
+	
+	//followerThread.setPerodic(0.01);
   
 }
